@@ -21,7 +21,7 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Basic validation
     if (!formData.name || !formData.email || !formData.message) {
@@ -29,9 +29,24 @@ const Contact = () => {
       return;
     }
     setError("");
-    setSubmitted(true);
-    alert(`Thank you, ${formData.name}! Your message has been received.`);
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        setSubmitted(true);
+        alert(`Thank you, ${formData.name}! Your message has been received.`);
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setError("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      setError("Network error. Please check your connection and try again.");
+    }
   };
 
   return (
