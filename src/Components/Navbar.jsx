@@ -1,9 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Logo from "../assets/image/logo-bg.png";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      if (scrollPosition > 50) { // Adjust threshold as needed
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const toggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 
@@ -17,7 +36,13 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-transparent shadow-md fixed w-full z-50">
+    <nav 
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-pink-100 bg-opacity-90 backdrop-blur-sm shadow-md'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3">
@@ -31,8 +56,8 @@ const Navbar = () => {
               <NavLink
                 to={path}
                 className={({ isActive }) =>
-                  `text-pink-700 font-semibold hover:text-pink-900 transition no-underline${
-                    isActive ? "border-b-2 border-pink-700" : ""
+                  `text-pink-700 font-semibold hover:text-pink-900 transition no-underline ${
+                    isActive ? "border-b-2 border-pink-700 pb-1" : ""
                   }`
                 }
               >

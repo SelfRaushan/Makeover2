@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 
-dotenv.config({ path: './backend/.env' });
+dotenv.config({ path: 'D:/Home Work/Makeover2/backend/.env' });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

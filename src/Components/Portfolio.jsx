@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -20,6 +21,7 @@ const categories = [
 
 export default function PortfolioSection() {
   const [filter, setFilter] = useState("All");
+  const [selectedImage, setSelectedImage] = useState(null); // State to hold the selected image for fullscreen
   const filterRef = useRef(null);
 
   const bridalImgs = globToArray(bridalImages);
@@ -43,6 +45,16 @@ export default function PortfolioSection() {
     if (filter === "All") return allItems;
     return allItems.filter((item) => item.category === filter);
   }, [filter, allItems]);
+
+  // Function to handle image click for fullscreen
+  const handleImageClick = (src) => {
+    setSelectedImage(src);
+  };
+
+  // Function to close the fullscreen image
+  const closeFullscreen = () => {
+    setSelectedImage(null);
+  };
 
   // Sticky filter bar behavior unchanged
   useEffect(() => {
@@ -148,6 +160,7 @@ export default function PortfolioSection() {
                 variants={fadeInUp}
                 className="masonry-item relative break-inside-avoid mb-2 overflow-hidden rounded-lg cursor-pointer shadow-md"
                 whileHover={{ scale: 1.05 }}
+                onClick={() => handleImageClick(src)} // Add onClick handler here
               >
                 <img
                   src={src}
@@ -172,6 +185,38 @@ export default function PortfolioSection() {
           </AnimatePresence>
         </div>
       </motion.div>
+
+      {/* Fullscreen Image Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.5 } }} // Slightly longer fade for modal background
+            exit={{ opacity: 0, transition: { duration: 0.5 } }} // Slightly longer fade for modal background
+            onClick={closeFullscreen} // Close modal when clicking outside the image
+          >
+            <motion.img
+              src={selectedImage}
+              alt="Fullscreen View"
+              className="max-w-full max-h-screen object-contain rounded-lg shadow-xl"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, transition: { duration: 0.4, ease: "backOut", delay: 0.1 } }} // More dynamic entrance with delay
+              exit={{ scale: 0.8, opacity: 0, transition: { duration: 0.4, ease: "easeIn" } }}
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on the image itself
+            />
+            <button
+              onClick={closeFullscreen}
+              className="absolute top-4 right-4 text-white text-3xl font-bold z-50 p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition duration-300"
+              aria-label="Close fullscreen image"
+              initial={{ opacity: 0, scale: 0.8 }} // Initial state for close button animation
+              animate={{ opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut", delay: 0.2 } }} // Animation for close button
+            >
+              &times;
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Responsive CSS for masonry column counts */}
       <style jsx>{`
