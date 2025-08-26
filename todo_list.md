@@ -1,0 +1,4 @@
+- [ ] Read src/pages/Portfolio.jsx to identify the syntax error.
+- [ ] Fix the syntax error in src/pages/Portfolio.jsx.
+- [ ] Verify the fix by ensuring the application builds without errors.
+- [ ] Inform the user about the resolution.

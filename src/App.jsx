@@ -9,6 +9,7 @@ import Portfolio from "./pages/Portfolio";
 import Services from "./pages/Services";
 import BookingForm from "./pages/BookingForm";
 import Contact from "./pages/Contact"; // Your contact page
+//import AIChatbot from "./Components/AIChatbot"; // Import the AIChatbot component
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           {/* Add 404 NotFound route if desired */}
         </Routes>
       </main>
+      {/* <AIChatbot /> Add the AIChatbot component here */}
       <Footer />
     </>
   );

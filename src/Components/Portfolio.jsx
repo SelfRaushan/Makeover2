@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -42,8 +41,19 @@ export default function PortfolioSection() {
   );
 
   const filteredItems = useMemo(() => {
-    if (filter === "All") return allItems;
-    return allItems.filter((item) => item.category === filter);
+    let itemsToDisplay = [];
+    if (filter === "All") {
+      itemsToDisplay = allItems;
+    } else {
+      itemsToDisplay = allItems.filter((item) => item.category === filter);
+    }
+
+    // Apply pagination limits
+    if (filter === "All") {
+      return itemsToDisplay.slice(0, 30); // Show first 30 for 'All'
+    } else {
+      return itemsToDisplay.slice(0, 5); // Show first 5 for specific filters
+    }
   }, [filter, allItems]);
 
   // Function to handle image click for fullscreen

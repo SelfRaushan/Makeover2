@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 
 import {
@@ -57,6 +57,19 @@ export default function Portfolio() {
     transition: { duration: 0.4, ease: "easeInOut" },
   };
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openImageModal = (src) => {
+    setSelectedImage(src);
+    setIsModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setSelectedImage(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <main className="min-h-screen bg-pink-50 py-20 px-5 select-none">
       <header className="max-w-6xl mx-auto text-center mb-12">
@@ -91,13 +104,9 @@ export default function Portfolio() {
           <motion.figure
             key={id}
             className="relative rounded-xl overflow-hidden cursor-pointer break-inside-avoid shadow-lg"
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeIn}
-            viewport={{ once: true, amount: 0.3 }}
-            whileHover="hover"
             tabIndex={0}
             role="button"
+            onClick={() => openImageModal(src)}
           >
             <motion.img
               src={src}
@@ -114,23 +123,39 @@ export default function Portfolio() {
               }}
               transition={{ duration: 0.4 }}
             />
-
             <motion.figcaption
               className="absolute inset-0 flex items-center justify-center rounded-xl text-white text-lg font-semibold"
-              style={{ backgroundColor: 'rgba(251, 207, 232, 0)' }} // initial transparent light pink (using Tailwind pink-300 with opacity)
+              style={{ backgroundColor: 'rgba(251, 207, 232, 0)' }}
               variants={{
-                hover: { backgroundColor: 'rgba(251, 207, 232, 0.3)', opacity: 1 }, // light pink with 30% opacity
+                hover: { backgroundColor: 'rgba(251, 207, 232, 0.3)', opacity: 1 },
               }}
               initial={{ opacity: 0, backgroundColor: 'rgba(251, 207, 232, 0)' }}
-              whileHover="hover"
               transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               {category}
             </motion.figcaption>
-
           </motion.figure>
         ))}
       </div>
+
+      {/* Modal for full-size image */}
+      {isModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 cursor-pointer"
+          onClick={closeImageModal}
+        >
+          <motion.img
+            src={selectedImage}
+            alt="Full size portfolio image"
+            className="max-w-11/12 max-h-11/12 rounded-lg shadow-xl cursor-auto"
+            style={{ maxWidth: '90%', maxHeight: '90%' }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on the image itself
+          />
+        </div>
+      )}
     </main>
   );
 }
